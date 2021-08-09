@@ -34,7 +34,7 @@ msfconsole로 메타스플로잇 열 수 있다. 메타스플로잇을 연 후�
 # 5. 수리카타 모드 변경
 #### 단순히 수리카타 설치만 하고 drop 룰을 적용하면 패킷이 차단되지 않음. 모드의 변경이 필요.
 수리카타에는 여러 가지 모드들이 있는데 그 중 대표적으로 많이 사용되는 모드가 IDS모드와 IPS모드이다. 수리카타를 설치하고 아무 설정을 건드리지 않거나, 명령어를 입력하지 않으면 패킷에 대한 로그를 남기지만(IDS) 직접 차단시키지는 못한다.  
-IPS 모드로 동작하기 위해서는 가장 쉬운 방법이 NFQUEUE를 이용하는 것이다. NFQUEUE에 대한 설명과 NFQUEUE를 이용하는 것 이외에 수리카타를 IPS 모드로 동작시키고 싶다면 다음 문서를 참조하면 된다. <https://suricata.readthedocs.io/en/suricata-6.0.0/setting-up-ipsinline-for-linux.html#setting-up-ips-with-netfilter>
+IPS 모드로 동작하기 위해서는 가장 쉬운 방법이 NFQUEUE를 이용하는 것이다. NFQUEUE에 대한 설명과 NFQUEUE를 이용하는 것 이외에 수리카타를 IPS 모드로 동작시키고 싶다면 다음 문서를 참조하면 된다. <https://suricata.readthedocs.io/en/suricata-6.0.0/setting-up-ipsinline-for-linux.html#setting-up-ips-with-netfilter> </br>
 <https://suricata.readthedocs.io/en/suricata-6.0.0/configuration/suricata-yaml.html#nfq>  
   
 아래 명령어는 NFQUEUE를 이용하여 수리카타를 IPS 모드로 동작시키게 하는 명령어이다. 공식문서에 따라 yaml 파일 설정을 바꾼 후 순서대로 입력하면 된다.
