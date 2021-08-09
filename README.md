@@ -27,5 +27,26 @@ msfconsole로 메타스플로잇 열 수 있다. 메타스플로잇을 연 후�
 
 # 4. 파일 설정
 #### slowloris나 apache, tomcat DoS 공격 등이 성공했는지 정확히 판단하기 위해 여러 설정 파일 변경 필요
-* apache2.4 같은 경우 slowloris를 /etc/apache2/mods-enabled/reqtimeout.conf라는 설정 파일에서 RequestReadTimeout header=10을 통해 막을 수 있다. 10초 이내로 헤더를 전부 다 보내지 않을 경우 차단하겠다는 설정으로 이 숫자를 늘리거나 해당 줄을 주석처리하면 된다. RUDY 공격과 같은 경우는 같은 파일의 RequestReadTimeout body=20을 바꿔주면 된다.
-* apache2.4 같은 경우 동시 최대 연결 가능한 클라이언트 수를 /etc/apache2/mods-enabled/mpm_event.conf라는 설정 파일에서 MaxRequestWorkers라는 변수를 통해 설정한다. DoS공격을 원활히 진행하기 위해서 이를 바꾸거나 메타스플로잇의 세션 연결 수를 바꿔줘야 한다.
+* apache2.4 같은 경우 slowloris를 _/etc/apache2/mods-enabled/reqtimeout.conf_ 라는 설정 파일에서 RequestReadTimeout header=10을 통해 막을 수 있다. 10초 이내로 헤더를 전부 다 보내지 않을 경우 차단하겠다는 설정으로 이 숫자를 늘리거나 해당 줄을 주석처리하면 된다. RUDY 공격과 같은 경우는 같은 파일의 RequestReadTimeout body=20을 바꿔주면 된다.
+* apache2.4 같은 경우 동시 최대 연결 가능한 클라이언트 수를 _/etc/apache2/mods-enabled/mpm_event.conf_ 라는 설정 파일에서 MaxRequestWorkers라는 변수를 통해 설정한다. DoS공격을 원활히 진행하기 위해서 이를 바꾸거나 메타스플로잇의 세션 연결 수를 바꿔줘야 한다.
+* 수리카타 룰 파일의 위치는 _/var/lib/suricata/rules/suricata.rules_ 에 있으며, 인터페이스를 지정하거나 로그 파일 등의 위치를 지정할 수 있는 설정 파일 위치는 _/etc/suricata/suricata.yaml_ 이다. alert나 drop등의 정책으로 기본적으로 로그가 찍히는 위치는 _/var/log/suricata/fast.log_ 이다.
+
+# 5. 수리카타 모드 변경
+#### 단순히 수리카타 설치만 하고 drop 룰을 적용하면 패킷이 차단되지 않음. 모드의 변경이 필요.
+수리카타에는 여러 가지 모드들이 있는데 그 중 대표적으로 많이 사용되는 모드가 IDS모드와 IPS모드이다. 수리카타를 설치하고 아무 설정을 건드리지 않거나, 명령어를 입력하지 않으면 패킷에 대한 로그를 남기지만(IDS) 직접 차단시키지는 못한다.  
+IPS 모드로 동작하기 위해서는 가장 쉬운 방법이 NFQUEUE를 이용하는 것이다. NFQUEUE에 대한 설명과 NFQUEUE를 이용하는 것 이외에 수리카타를 IPS 모드로 동작시키고 싶다면 다음 문서를 참조하면 된다. <https://suricata.readthedocs.io/en/suricata-6.0.0/setting-up-ipsinline-for-linux.html#setting-up-ips-with-netfilter> <https://suricata.readthedocs.io/en/suricata-6.0.0/configuration/suricata-yaml.html#nfq>  
+  
+아래 명령어는 NFQUEUE를 이용하여 수리카타를 IPS 모드로 동작시키게 하는 명령어이다. 공식문서에 따라 yaml 파일 설정을 바꾼 후 순서대로 입력하면 된다.
+
+        sudo iptables -I INPUT -j NFQUEUE  // input chain NFQUEUE 정책 실행
+        sudo iptables -I OUTPUT -j NFQUEUE  // output chain NFQUEUE 정책 실행
+        sudo suricata -c /etc/suricata/suricata.yaml -q 0  // 수리카타 설정 파일을 불러와서 실행
+        
+# 6. 수행한 공격과 차단 룰셋
+* CVE:2007-6750(Slow HTTP DoS)
+* CVE:2020-13160(anydesk format string vulnerability)
+* CVE:2014-0050(apache, tomcat fileupload DoS)
+* CVE:2018-12613(phpmyadmin LFI RCE)
+
+공격에 대한 자세한 설명과 룰셋, 소스코드는 아래 노션에 정리함.
+<https://www.notion.so/IDS-IPS-283460d27f1446af8fbeb61da3e3fa76>    
