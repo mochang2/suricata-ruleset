@@ -1,0 +1,35 @@
+#drop tcp any any -> 10.0.2.15 80 (msg: "slowloris default rule"; sid: 1000; rev:1;)
+# the above rule drops normal packet
+#alert tcp any any -> 10.0.2.15 80 (msg: "slowloris test1-flow rule alert"; flow: established, to_server; sid: 1001; rev:1;)
+#drop tcp any any -> 10.0.2.15 80 (msg: "slowloris test1-flow rule drop"; flow: established, to_server; sid: 10001; rev:1;)
+#alert tcp any any -> 10.0.2.15 80 (msg: "slowloris test2-flag rule alert"; flags: AP; sid: 1002; rev: 1;)
+#drop tcp any any -> 10.0.2.15 80 (msg: "slowloris test2-flag rule drop"; flags: AP; sid: 10002; rev: 1;)
+#alert tcp any any -> 10.0.2.15 80 (msg: "slowloris test3-pcre rule alert"; pcre: "/[^\x0d\x0a]\x0d\x0a$/"; sid: 1003; rev: 1;)
+#drop tcp any any -> 10.0.2.15 80 (msg: "slowloris test3-pcre rule drop"; pcre: "/[^\x0d\x0a]\x0d\x0a$/"; sid: 10003; rev: 1;)
+#alert tcp any any -> 10.0.2.15 80 (msg: "slowloris test3-1-pcre rule alert"; content: !"HTTP/1.1"; http_header; nocase; pcre: "/[^\x0d\x0a]\x0d\x0a$/"; sid: 100003; rev: 1;)
+#drop tcp any any -> 10.0.2.15 80 (msg: "slowloris test3-1-pcre rule drop"; content: !"HTTP/1.1"; http_header; nocase; pcre: "/[^\x0d\x0a]\x0d\x0a$/"; sid: 1000003; rev: 1;)
+#alert tcp any any -> 10.0.2.15 80 (msg: "slowloris test4-endswith rule alert"; content: "|0D 0A|"; endswith; nocase; sid: 1004; rev: 1;)
+#drop tcp any any -> 10.0.2.15 80 (msg: "slowloris test4-endswith rule drop"; content: "|0D 0A|"; endswith; nocase; sid: 10004; rev: 1;)
+#alert tcp any any -> 10.0.2.15 80 (msg: "slowloris test5-threshold rule alert"; threshold: type threshold, track by_dst, count 80, seconds 10; sid: 1005; rev: 1;)
+#drop tcp any any -> 10.0.2.15 80 (msg: "slowloris test5-threshold rule drop"; threshold: type threshold, track by_dst, count 80, seconds 10; sid: 10005; rev: 1;)
+#alert tcp any any -> 10.0.2.15 80 (msg: "slowloris test6-threshold & pcre rule alert"; flow: established, to_server; flags: AP+; pcre: "/[^\x0d\x0a]\x0d\x0a$/"; threshold: type threshold, track by_dst, count 80, seconds 10; sid: 1006; rev: 1;)
+#drop tcp any any -> 10.0.2.15 80 (msg: "slowloris test6-threshold & pcre rule drop"; flow: established, to_server; flags: AP+; pcre: "/[^\x0d\x0a]\x0d\x0a$/"; threshold: type threshold, track by_dst, count 80, seconds 10; sid: 10006; rev: 1;)
+
+#alert udp any any -> 10.0.2.15 50001 (msg: "anydesk FSB alert"; content: "|3e d1 01 00 00 13 37 00 00 00 00 02 01 00 00 02 14|"; startswith; nocase; content: "|25 31 24 2a 31 24 78 25 31 38 78 25 31 32 35 24 6c 6e|"; distance: 2; within: 18; nocase; content: "|eb 27 5b 53 5f b0|"; distance: 296; within: 6; nocase; content: "|fc ae 75 fd 57 59 53 5e 8a 06 30 07 48 ff c7 48 ff c6 66 81 3f|"; distance: 1; within: 21; nocase; content: "|75 ea eb e6 ff e1 e8 d4 ff ff ff 0b|"; distance: 7; within: 12; nocase; content: "|61 32 53 04 0e 43 8e cb 7f 03 43 3a f4 61 37 53 04 0e 61 32 53 04 0e 43 8e cb 7f 03 43 3a f4 61 37 53 04 0e 43 3a f4 61 02 53 92 bd 1b 43 82 dd 46 3a c2 61 29 4a 51 b9 0c 04 0e 43 8e cb 73 5a 61 01 4a 52 5b 61 22 53 92 61 09 54 61 0a 55 04 0e 43 8e cb 73 30 43 9c 43 b2 09 0b 1a 57 01 0b 09 0f 5a 43 82 ed 61 1b 51 61 21 53 04 0e 52 43 8e cb 72 2e 42 f4 c2 7f 13 5c 61 28 53 61 0b 61 0e 43 82 ec 43 3a fd 04 0e 52 52 54 43 8e cb 72 cc 61 37 53 61 0a 54 04 0e 55 61|"; distance: 1; within: 155; nocase; content: "|25 31 38 34 37 32 32 34 35 78 25 31 30 39 24 6c 6e 00 00 00 00 00 00 00 02 61 64 00 00 00 00 04 6d 61 69 6e|"; distance: 19; within: 36; nocase; dsize:>590; sid: 1001; rev:1;)
+#drop udp any any -> 10.0.2.15 50001 (msg: "anydesk FSB drop"; content: "|3e d1 01 00 00 13 37 00 00 00 00 02 01 00 00 02 14|"; startswith; nocase; content: "|25 31 24 2a 31 24 78 25 31 38 78 25 31 32 35 24 6c 6e|"; distance: 2; within: 18; nocase; content: "|eb 27 5b 53 5f b0|"; distance: 296; within: 6; nocase; content: "|fc ae 75 fd 57 59 53 5e 8a 06 30 07 48 ff c7 48 ff c6 66 81 3f|"; distance: 1; within: 21; nocase; content: "|75 ea eb e6 ff e1 e8 d4 ff ff ff 0b|"; distance: 7; within: 12; nocase; content: "|61 32 53 04 0e 43 8e cb 7f 03 43 3a f4 61 37 53 04 0e 61 32 53 04 0e 43 8e cb 7f 03 43 3a f4 61 37 53 04 0e 43 3a f4 61 02 53 92 bd 1b 43 82 dd 46 3a c2 61 29 4a 51 b9 0c 04 0e 43 8e cb 73 5a 61 01 4a 52 5b 61 22 53 92 61 09 54 61 0a 55 04 0e 43 8e cb 73 30 43 9c 43 b2 09 0b 1a 57 01 0b 09 0f 5a 43 82 ed 61 1b 51 61 21 53 04 0e 52 43 8e cb 72 2e 42 f4 c2 7f 13 5c 61 28 53 61 0b 61 0e 43 82 ec 43 3a fd 04 0e 52 52 54 43 8e cb 72 cc 61 37 53 61 0a 54 04 0e 55 61|"; distance: 1; within: 155; nocase; content: "|25 31 38 34 37 32 32 34 35 78 25 31 30 39 24 6c 6e 00 00 00 00 00 00 00 02 61 64 00 00 00 00 04 6d 61 69 6e|"; distance: 19; within: 36; nocase; dsize:>590; sid: 10001; rev:1;)
+
+#alert tcp any any -> 10.0.2.15 80 (msg: "fileupload dos test1-pcre alert"; flow: established, to_server; flags: A+; pcre: "/[0]{1000,}/"; threshold: type threshold, track by_dst, count 40, seconds 4; dsize: 1448; sid: 10001; rev:1;)
+#drop tcp any any -> 10.0.2.15 80 (msg: "fileupload dos test1-pcre drop"; flow: established, to_server; flags: A+; pcre: "/[0]{1000,}/"; threshold: type threshold, track by_dst, count 40, seconds 4; dsize: 1448; sid: 100001; rev:1;)
+#alert tcp any any -> 10.0.2.15 80 (msg: "fileupload dos test1-pcre alert"; flow: to_server, not_established; flags: S+; threshold: type threshold, track by_dst, count 40, seconds 3; sid: 10001; rev:1;)
+#drop tcp any any -> 10.0.2.15 80 (msg: "fileupload dos test1-pcre drop"; flow: to_server, not_established; flags: S+; threshold: type threshold, track by_dst, count 40, seconds 3; sid: 100001; rev:1;)
+
+#alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:"POST"; http_method; content:"pma_username=root&pma_password=Qh1Wp4ro%5e"; sid:10001; rev:1;)
+#drop tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload drop"; content:"POST"; http_method; content:"pma_username=root&pma_password=Qh1Wp4ro%5e"; sid:100001; rev:1;)
+#alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:"POST"; http_method; content:"sql_query=CREATE%20DATASE%20"; sid:10002; rev:1;)
+#drop tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:""; sid:10001; rev:1;)
+
+#alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:"pma_username=root&pma_password=Qh1Wp4ro%5e"; sid:10001; rev:1;)
+#alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:"pma_username=root&pma_password=Qh1Wp4ro%5e"; sid:10001; rev:1;)
+
+#alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:"pma_username=root&pma_password=Qh1Wp4ro%5e"; sid:10001; rev:1;)
+#alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:"pma_username=root&pma_password=Qh1Wp4ro%5e"; sid:10001; rev:1;)
