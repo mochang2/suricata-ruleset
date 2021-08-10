@@ -27,9 +27,9 @@
 #drop tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload drop"; content:"POST"; http_method; content:"pma_username=root&pma_password=Qh1Wp4ro%5e"; sid:100001; rev:1;)
 #alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:"POST"; http_method; content:"sql_query=CREATE%20DATASE%20"; sid:10002; rev:1;)
 #drop tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:""; sid:10001; rev:1;)
-
 #alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:"pma_username=root&pma_password=Qh1Wp4ro%5e"; sid:10001; rev:1;)
 #alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:"pma_username=root&pma_password=Qh1Wp4ro%5e"; sid:10001; rev:1;)
-
-#alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:"pma_username=root&pma_password=Qh1Wp4ro%5e"; sid:10001; rev:1;)
-#alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin RCE test1-login payload alert"; content:"pma_username=root&pma_password=Qh1Wp4ro%5e"; sid:10001; rev:1;)
+#alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin lfi rce alert"; flow: established, to_server; content:"../"; pcre: "/(db_datadict|db_events|db_export|db_import|db_multi_table_query|db_operations|db_sql|db_routines|db_structure)/"; sid: 10001; rev:1;)
+#drop tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin lfi rce drop"; flow: established, to_server; content:"../"; pcre: "/(db_datadict|db_events|db_export|db_import|db_multi_table_query|db_operations|db_sql|db_routines|db_structure)/"; sid: 100001; rev:1;)
+alert tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin lfi rce alert"; flow: established, to_server; content: "GET"; http_method; nocase; content:"../"; distance:34; pcre: "/(db_datadict|db_events|db_export|db_import|db_multi_table_query|db_operations|db_sql|db_routines|db_structure)/"; sid: 10001; rev:1;)
+drop tcp any any -> 10.0.2.15 80 (msg: "phpmyadmin lfi rce drop"; flow: established, to_server; content: "GET"; http_method; nocase; content:"../"; distance:34; pcre: "/(db_datadict|db_events|db_export|db_import|db_multi_table_query|db_operations|db_sql|db_routines|db_structure)/"; sid: 100001; rev:1;)
