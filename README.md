@@ -48,6 +48,7 @@ IPS 모드로 동작하기 위해서는 가장 쉬운 방법이 NFQUEUE를 이�
 * CVE:2020-13160(anydesk format string vulnerability)
 * CVE:2014-0050(apache, tomcat fileupload DoS)
 * CVE:2018-12613(phpmyadmin LFI RCE)
+* CVE:2020-10199(nexus repo manager RCE)
 
 공격에 대한 자세한 설명과 룰셋, 소스코드는 아래 노션에 정리함.  
 <https://www.notion.so/IDS-IPS-283460d27f1446af8fbeb61da3e3fa76>    
