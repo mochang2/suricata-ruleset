@@ -43,6 +43,8 @@ IPS 모드로 동작하기 위해서는 가장 쉬운 방법이 NFQUEUE를 이�
         sudo iptables -I OUTPUT -j NFQUEUE  // output chain NFQUEUE 정책 실행
         sudo suricata -c /etc/suricata/suricata.yaml -q 0  // 수리카타 설정 파일을 불러와서 실행
         
+참고로 공격을 시도했을 때 로그에 wdrop이 남으면 IPS 모드가 제대로 설정이 안 되었다는 뜻이다. wdrop은 would drop으로 drop 흉내를 내지만 패킷의 흐름을 방해하진 않는다. 하지만 완벽히 drop시킨다는 뜻은 또 아니다.
+        
 # 6. 수행한 공격과 차단 룰셋
 * CVE:2007-6750(Slow HTTP DoS)
 * CVE:2020-13160(anydesk format string vulnerability)
