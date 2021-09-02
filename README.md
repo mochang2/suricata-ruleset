@@ -54,3 +54,16 @@ IPS 모드로 동작하기 위해서는 가장 쉬운 방법이 NFQUEUE를 이�
 
 공격에 대한 자세한 설명과 룰셋, 소스코드는 아래 노션에 정리함.  
 <https://www.notion.so/IDS-IPS-283460d27f1446af8fbeb61da3e3fa76>    
+
+# 7. .pcap(linux 환경) 재전송
+공격 코드가 없어도 pcap 파일에서 캡처된 패킷 그대로 replay되게끔 할 수 있다. 우선 replay하고 싶은 패킷을 wireshark 등을 통해 pcap 파일로 만들어야 한다. 이후 아래 명령어를 통해 dummy interface를 추가한다.
+
+        sudo ip link add dum0 type dummy  // dummy interface의 이름이 dum0
+        sudo ifconfig dum0 up
+        sudo ip link del dum0             // 추가된 interface를 삭제하는 명령어
+
+tcpreplay 명령어를 이용해 해당 inteface로 패킷을 전송하게끔 한다. tcpreplay는 기본으로 있는 패키지가 아니므로 sudo apt install tcpreplay를 해줘야 한다.
+
+        sudo tcpreplay -i dum0 xxx.pcap   // 절대경로, 상대경로 모두 가능
+        
+위와 같은 방식으로 진행하면 dum0 interface에 똑같은 패킷이 재전송되고, wireshark로 패킷을 잡으면 똑같은 패킷들이 똑같은 시간동안 잡힌다.
