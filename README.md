@@ -67,3 +67,10 @@ tcpreplay 명령어를 이용해 해당 inteface로 패킷을 전송하게끔 �
         sudo tcpreplay -i dum0 xxx.pcap   // 절대경로, 상대경로 모두 가능
         
 위와 같은 방식으로 진행하면 dum0 interface에 똑같은 패킷이 재전송되고, wireshark로 패킷을 잡으면 똑같은 패킷들이 똑같은 시간동안 잡힌다.
+
+# 8. Suricata 사용 이유
+
+- 오픈소스.
+- multi-threading을 사용하기 때문에 high performance를 기대할 수 있음.
+- Snort가 갖고 있던 대부분의 기능을 갖고 있고 Snort의 기능 외에도 Protocol Identification, HTTP Normalizer & Parser, File Identification 등의 기능이 추가됐음.
+
